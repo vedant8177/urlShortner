@@ -17,8 +17,30 @@ app.use(bodyParser.json());
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
-app.get('/', function(req, res) {
-  res.sendFile(process.cwd() + '/views/index.html');
+const urls = [];
+
+app.post('/api/shorturl', (req, res) => {
+  let url = req.body.url.replace(/\/*$/, '');
+  let validUrl = url.replace(/^https:\/\/(www.)?/, '');
+  dns.lookup(validUrl, (err, address, family) => {
+    if (err) {
+      res.json({ error: 'invalid url' })
+    }
+    else {
+      if (!urls.includes(url)) {
+        urls.push(url);
+      }
+      res.json({
+        original_url: url,
+        short_url: urls.indexOf(url) + 1
+      });
+    }
+  });
+});
+
+app.get('/api/shorturl/:id', (req, res) => {
+  const externarlUrl = urls[req.params.id - 1];
+  res.redirect(externarlUrl);
 });
 
 // Your first API endpoint
