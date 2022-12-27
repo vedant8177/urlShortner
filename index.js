@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
+
 const urls = [];
 
 app.post('/api/shorturl', (req, res) => {
@@ -41,11 +42,6 @@ app.post('/api/shorturl', (req, res) => {
 app.get('/api/shorturl/:id', (req, res) => {
   const externarlUrl = urls[req.params.id - 1];
   res.redirect(externarlUrl);
-});
-
-// Your first API endpoint
-app.get('/api/hello', function(req, res) {
-  res.json({ greeting: 'hello API' });
 });
 
 app.listen(port, function() {
